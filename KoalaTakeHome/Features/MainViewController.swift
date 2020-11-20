@@ -91,14 +91,29 @@ class MainViewController: UIViewController, MainView, KoalaSwitchListener {
 
     func tappedCell(linkedDataObject: KoalaDataObject) {
         switch linkedDataObject.type {
-        case .image: break
-        case .text:
-            if let url = "https://koala.io/".url {
-                
+        case .image:
+            if let linkedImage = linkedDataObject.image {
+                guard linkedImage.isKind(of: PlaceholderImage.self) == false else {
+                    return
+                }
+                openImageViewer(image: linkedImage)
             }
+        case .text:
+            navigateToWebViewController(url: "https://koala.io/".url!)
+        case .error:
+            break
         }
+
     }
 
+    private func openImageViewer(image: UIImage) {
+
+    }
+
+    private func navigateToWebViewController(url: URL) {
+        let webVC = KoalaWebViewController.withURL(url: url)
+        present(webVC, animated: true, completion: nil)
+    }
 }
 
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {

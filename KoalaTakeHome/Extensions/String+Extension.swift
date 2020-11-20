@@ -7,13 +7,17 @@
 
 import Foundation
 
-extension String {
+extension String: URLConvertible {
     var notificationName: Notification.Name {
         Notification.Name(rawValue: self)
     }
 
     var url: URL? {
-        return URL(string: self)
+        URL(string: self)
+    }
+
+    var absoluteString: String {
+        self
     }
 }
 

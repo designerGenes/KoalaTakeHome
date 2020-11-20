@@ -12,11 +12,10 @@ import SwiftyJSON
 
 /**
  There are many improvements that this class would need before it could be used in production
-  Most importantly would be to remove the singleton nature.  However, I am in a hurry and this is a fixed list data set
+ Most importantly would be to remove the singleton nature.  However, I am in a hurry and this is a fixed list data set
  */
 
 class RemoteDataManager: NSObject {
-    static let receivedDataNotification = "receivedDataNotification".notificationName
     static let receivedImageDataNotification = "receivedImageDataNotification".notificationName
     static let finishedDataRetrievalNotification = "finishedDataRetrievalNotification".notificationName
     static var shared = RemoteDataManager()
@@ -24,9 +23,12 @@ class RemoteDataManager: NSObject {
     var dataArray = [KoalaDataObject]()
     var imageDictionary = [String: UIImage]()  // URLstring : image
 
+
     func retrieveImage(url: URL, listener: Any, selector: Selector) {
         let postNotification = {
-            NotificationCenter.default.post(name: Self.receivedImageDataNotification, object: nil, userInfo: ["url": url.absoluteString])
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: Self.receivedImageDataNotification, object: nil, userInfo: ["url": url.absoluteString])
+            }
         }
 
         // download and saves to dict
@@ -36,14 +38,14 @@ class RemoteDataManager: NSObject {
         }
         NotificationCenter.default.addObserver(listener, selector: selector, name: Self.receivedImageDataNotification, object: nil)
         // download into dictionary
-        AF.request(url, method: .get).responseData { (wrappedData) in
-            guard let unwrappedData = wrappedData.data, let img = UIImage(data: unwrappedData) else {
-                return // error handling
+
+        AF.download(url.asRequest).responseData { (wrappedData) in
+            if let error = wrappedData.error {
+                self.imageDictionary[url.absoluteString] = PlaceholderImage.create()
+            } else if let unwrappedData = wrappedData.value, let img = UIImage(data: unwrappedData) {
+                self.imageDictionary[url.absoluteString] = img
             }
-            self.imageDictionary[url.absoluteString] = img
-            DispatchQueue.main.async {
-                postNotification()
-            }
+            postNotification()
         }
 
     }
@@ -52,15 +54,9 @@ class RemoteDataManager: NSObject {
         guard !dataArray.isEmpty else {
             return false
         }
-        for dataObj in self.dataArray {
-            if let url = dataObj.imageURL {
-                if self.imageDictionary[url.absoluteString] == nil {
-                    return false
-                }
-            }
-        }
-
-        return true
+        let imageObjects = dataArray.filter({$0.imageURL != nil})
+        let filledImageObjects = dataArray.filter({$0.image != nil})
+        return imageObjects.count == filledImageObjects.count
     }
 
     @objc func receivedImageResponse(notification: Notification) {
@@ -69,6 +65,7 @@ class RemoteDataManager: NSObject {
             NotificationCenter.default.post(name: RemoteDataManager.finishedDataRetrievalNotification, object: nil)
         }
     }
+
 
     func retrieveRemoteData() {
         // 1. retrieve remote JSON
@@ -81,25 +78,30 @@ class RemoteDataManager: NSObject {
                 return
             }
 
-            if let strData = String(data: data, encoding: .utf8) {
-                print("data:\n\(strData)")
-            }
-
-
             var koalaDataObjects = [KoalaDataObject]()
             do {
                 let jsonData = try JSON(data: data)
-                NotificationCenter.default.post(name: RemoteDataManager.receivedDataNotification, object: nil)
-                jsonData.arrayValue.forEach { (jsonObject) in
-                    if let dataObject = KoalaDataObject(json: jsonObject) {
-                        koalaDataObjects.append(dataObject)
-                        if let imageURL = dataObject.imageURL {
-                            self.retrieveImage(url: imageURL, listener: self, selector: #selector(self.receivedImageResponse(notification:)))
-                        }
+                var imageObjectIdxs = [Int]()
+                for (x, jsonObject) in jsonData.arrayValue.enumerated() {
+                    let dataObject = KoalaDataObject(json: jsonObject)
+                    koalaDataObjects.append(dataObject)
+                    if dataObject.imageURL != nil {
+                        imageObjectIdxs.append(x)
                     }
+
                 }
                 self.dataArray = koalaDataObjects
 
+                for idx in imageObjectIdxs {
+                    let dataObject = koalaDataObjects[idx]
+                    if let imageURL = dataObject.imageURL, let url = imageURL.url {
+                        if UIApplication.shared.canOpenURL(url) {
+                            self.retrieveImage(url: url, listener: self, selector: #selector(self.receivedImageResponse(notification:)))
+                        } else {
+                            self.imageDictionary[url.absoluteString] = PlaceholderImage.create()
+                        }
+                    }
+                }
             } catch {
 
             }

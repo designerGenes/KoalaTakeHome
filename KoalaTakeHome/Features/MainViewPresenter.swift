@@ -15,6 +15,7 @@ struct SwitchFieldState {
         switch type {
         case .image: return imageSwitchOn
         case .text: return textSwitchOn
+        case .error: return false
         }
     }
 

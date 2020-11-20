@@ -10,40 +10,70 @@ import UIKit
 import SwiftyJSON
 
 enum KoalaDataObjectType: String {
-    case text, image
+    case text, image, error
 }
 
 protocol JSONInitializable {
     init?(json: JSON)
 }
 
+protocol URLConvertible {
+    var url: URL? { get }
+    var absoluteString: String { get }
+}
+
+extension URL: URLConvertible {
+    var url: URL? {
+        self
+    }
+}
+
+
 struct KoalaDataObject: JSONInitializable {
     var id: String
     var type: KoalaDataObjectType
     var dateString: String
     var dataString: String?
-    var imageURL: URL?
+    var imageURL: URLConvertible?
 
     var image: UIImage? {
-        guard let imageURL = self.imageURL, let image = RemoteDataManager.shared.imageDictionary[imageURL.absoluteString] else {
+        guard let imageURL = self.imageURL else {
             return nil
         }
-        return image
+        return RemoteDataManager.shared.imageDictionary[imageURL.absoluteString]
     }
 
-    init?(json: JSON) {
-            guard let id = json["id"].string,
-               let typeRaw = json["type"].string,
-               let type = KoalaDataObjectType(rawValue: typeRaw),
-               let dateString = json["date"].string,
-               let rawData = json["data"].string else {
-                return nil
-            }
+    private static var errorJSON: JSON {
+        JSON([
+            "id": UUID(),
+            "type": KoalaDataObjectType.error.rawValue,
+            "dateString": "no date",
+            "data": "Unable to convert this object from JSON to model"
+        ])
+    }
 
-        self.id = id
-        self.type = type
-        self.dateString = dateString
-        self.imageURL = URL(string: rawData)
-        self.dataString = rawData
+    mutating private func processJSON(_ json: JSON) {
+        // here because we can't return an init inside an init
+        if let id = json["id"].string,
+              let typeRaw = json["type"].string,
+              let type = KoalaDataObjectType(rawValue: typeRaw),
+              let dateString = json["date"].string,
+              let rawData = json["data"].string {
+            self.id = id
+            self.type = type
+            self.dateString = dateString
+            self.imageURL = URL(string: rawData)
+            self.dataString = rawData
+        } else {
+            processJSON(Self.errorJSON)
+        }
+    }
+
+    init(json: JSON) {
+        self.id = ""
+        self.dataString = ""
+        self.dateString = ""
+        self.type = .error
+        self.processJSON(json)
     }
 }
