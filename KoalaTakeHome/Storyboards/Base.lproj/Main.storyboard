@@ -17,7 +17,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nR8-jX-MhX">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="654"/>
+                                <rect key="frame" x="20" y="0.0" width="374" height="654"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nXf-Zc-2fl" customClass="KoalaSwitch" customModule="KoalaTakeHome" customModuleProvider="target">
@@ -49,12 +49,12 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Qs8-oL-f12" firstAttribute="trailing" secondItem="fZU-uX-Jcl" secondAttribute="trailing" id="I8L-dY-7qV"/>
-                            <constraint firstAttribute="trailing" secondItem="nR8-jX-MhX" secondAttribute="trailing" id="MFb-QC-NI8"/>
-                            <constraint firstItem="nR8-jX-MhX" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="UyZ-DC-8aP"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="nR8-jX-MhX" secondAttribute="trailing" id="MFb-QC-NI8"/>
                             <constraint firstItem="xzU-H5-oQa" firstAttribute="leading" secondItem="fZU-uX-Jcl" secondAttribute="trailing" constant="14" id="eF2-eS-Lsq"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="nR8-jX-MhX" secondAttribute="bottom" constant="208" id="egA-NK-LbV"/>
                             <constraint firstItem="nR8-jX-MhX" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="iO8-bp-VeA"/>
                             <constraint firstItem="fZU-uX-Jcl" firstAttribute="centerY" secondItem="xzU-H5-oQa" secondAttribute="centerY" id="iY9-no-QQy"/>
+                            <constraint firstItem="nR8-jX-MhX" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="kKf-HH-nvL"/>
                             <constraint firstItem="Qs8-oL-f12" firstAttribute="centerY" secondItem="nXf-Zc-2fl" secondAttribute="centerY" id="rHu-zz-Kt9"/>
                             <constraint firstItem="xzU-H5-oQa" firstAttribute="top" secondItem="nXf-Zc-2fl" secondAttribute="bottom" constant="16" id="tbN-GB-euG"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="xzU-H5-oQa" secondAttribute="bottom" constant="80" id="u6J-DF-bUl"/>

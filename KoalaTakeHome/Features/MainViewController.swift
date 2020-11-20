@@ -29,21 +29,20 @@ class MainViewController: UIViewController, MainView, KoalaSwitchListener {
         if isLoading {
             let loadingView = UIView()
             self.loadingView = loadingView
-            guard let window = UIApplication.shared.delegate?.window, let unwrappedWindow = window else {
-                return
-            }
-            unwrappedWindow.addSubview(loadingView)
-            loadingView.backgroundColor = UIColor.white.withAlphaComponent(0.5)
+            loadingView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(loadingView)
+            loadingView.backgroundColor = UIColor.white.withAlphaComponent(0.8)
             let descLabel = UILabel()
+            descLabel.translatesAutoresizingMaskIntoConstraints = false
             loadingView.addSubview(descLabel)
             descLabel.text = "Loading..."
             NSLayoutConstraint.activate([
                 descLabel.centerYAnchor.constraint(equalTo: loadingView.centerYAnchor),
                 descLabel.centerXAnchor.constraint(equalTo: loadingView.centerXAnchor),
-                loadingView.topAnchor.constraint(equalTo: unwrappedWindow.topAnchor),
-                loadingView.bottomAnchor.constraint(equalTo: unwrappedWindow.bottomAnchor),
-                loadingView.leadingAnchor.constraint(equalTo: unwrappedWindow.leadingAnchor),
-                loadingView.trailingAnchor.constraint(equalTo: unwrappedWindow.trailingAnchor),
+                loadingView.topAnchor.constraint(equalTo: view.topAnchor),
+                loadingView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                loadingView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                loadingView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             ])
 
 
@@ -110,12 +109,15 @@ class MainViewController: UIViewController, MainView, KoalaSwitchListener {
     }
 
     private func openImageViewer(image: UIImage) {
-
+        let imageViewer = ImageViewerViewController(image: image)
+        self.present(imageViewer, animated: true, completion: nil)
     }
 
     private func navigateToWebViewController(url: URL) {
-        let webVC = KoalaWebViewController.withURL(url: url)
-        present(webVC, animated: true, completion: nil)
+        guard UIApplication.shared.canOpenURL(url) else {
+            return
+        }
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
 
@@ -130,7 +132,7 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 
-    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         self.tappedCell(linkedDataObject: self.dataSource[indexPath.row])
     }
 

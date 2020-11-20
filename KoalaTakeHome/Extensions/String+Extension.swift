@@ -29,9 +29,3 @@ extension String: URLConvertible {
         return true
     }
 }
-
-extension URL {
-    var asRequest: URLRequest {
-        URLRequest(url: self)
-    }
-}

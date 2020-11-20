@@ -7,7 +7,6 @@
 
 import Foundation
 import Alamofire
-import AlamofireImage
 import SwiftyJSON
 
 /**
@@ -40,7 +39,7 @@ class RemoteDataManager: NSObject {
         // download into dictionary
 
         AF.download(url.asRequest).responseData { (wrappedData) in
-            if let error = wrappedData.error {
+            if let _ = wrappedData.error {
                 self.imageDictionary[url.absoluteString] = PlaceholderImage.create()
             } else if let unwrappedData = wrappedData.value, let img = UIImage(data: unwrappedData) {
                 self.imageDictionary[url.absoluteString] = img
@@ -71,7 +70,7 @@ class RemoteDataManager: NSObject {
         // 1. retrieve remote JSON
         // 2. convert to data model objects
         // 3. download images associated with image data objects
-        // 4. emit notification
+        // 4. emit notification once all are finished downloading
         let remoteURL = "https://koala-coding-challenge.s3.amazonaws.com/ios/challenge-data.json".url!
         AF.request(remoteURL.absoluteString).responseData { (dataResponse) in
             guard let data = dataResponse.data else {

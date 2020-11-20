@@ -25,6 +25,7 @@ class KoalaSwitch: UISwitch {
     }
 
     func config(assocType: KoalaDataObjectType, listener: KoalaSwitchListener?) {
+        self.onTintColor = UIColor.systemBlue
         self.assocType = assocType
         self.listener = listener
         self.addTarget(self, action: #selector(switchChanged(switchInstance:)), for: UIControl.Event.valueChanged)

@@ -8,12 +8,6 @@
 import Foundation
 import UIKit
 
-public extension CGSize {
-    static var smallestValidSize: CGSize {
-        CGSize(width: 1, height: 1)
-    }
-}
-
 extension UIImage {
     public convenience init?(solidColor: UIColor, size: CGSize = CGSize.smallestValidSize) {
         let rect = CGRect(origin: .zero, size: size)

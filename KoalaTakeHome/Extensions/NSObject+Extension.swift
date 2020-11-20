@@ -7,8 +7,6 @@
 
 import Foundation
 
-//typealias ConfigureBlock = (Self) -> Self
-
 extension NSObjectProtocol {
     static var described: String {
         String(describing: self)
