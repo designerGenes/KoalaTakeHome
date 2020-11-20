@@ -19,6 +19,9 @@ class KoalaDataCell: UITableViewCell {
         self.dataContentLabel.text = nil
         self.typeLabel.text = nil
         self.dateLabel.text = nil
+        self.dataContentLabel.backgroundColor = .clear
+        self.dataImageView.backgroundColor = .clear
+        self.contentView.backgroundColor = .clear
         super.prepareForReuse()
     }
 
@@ -36,26 +39,41 @@ class KoalaDataCell: UITableViewCell {
     }
 
     func configure(with model: KoalaDataObject) {
-        let hasBrokenResponse = model.type == .error
-        let hasBrokenImage = model.image?.isKind(of: PlaceholderImage.self) == true
-        guard !hasBrokenResponse else {
+        let hasValidResponse = model.type != .error
+        let hasBrokenImage = hasValidResponse && model.image?.isKind(of: PlaceholderImage.self) == true
+        self.typeLabel.text = "Type: \(model.type.rawValue)"
+        self.dataContentLabel.text = hasBrokenImage ? "Error loading image at url: \(model.imageURL!)" : hasValidResponse ? model.data : "Malformed JSON error"
+        self.dataImageView.backgroundColor = .clear
+        self.dataImageView.contentMode = .scaleAspectFit
+        guard hasValidResponse else {
             self.dataImageView.isHidden = true
             self.dataContentLabel.isHidden = false
-            self.dataContentLabel.text = model.dataString?.uppercased()
+            self.dataContentLabel.text = self.dataContentLabel.text?.uppercased()
             self.dataContentLabel.backgroundColor = .yellow
+
             self.dataContentLabel.font = self.dataContentLabel.font.withSize(16)
             self.dataContentLabel.textAlignment = .center
-            self.typeLabel.text = model.type.rawValue
+            self.contentView.backgroundColor = .yellow
             return
         }
+        self.backgroundColor = .lightGray
         self.dataContentLabel.textAlignment = .left
-        self.dataImageView.isHidden = model.type != .image
+        self.dataImageView.isHidden = model.type != .image || hasBrokenImage
         self.dataContentLabel.isHidden = model.type != .text && !hasBrokenImage
-        // UIImage(solidColor: .black, size: CGSize(width: 675, height: self.frame.height / 2))
         self.dataImageView.image = model.image
-        self.dataContentLabel.text = hasBrokenImage ? "Error loading image" : model.dataString
-        self.dateLabel.text = model.dateString
-        self.typeLabel.text = model.type.rawValue
+        self.dateLabel.text = model.date
+
+        let lipView = UIView()
+        lipView.backgroundColor = .white
+        lipView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(lipView)
+        NSLayoutConstraint.activate([
+            lipView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+            lipView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            lipView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            lipView.heightAnchor.constraint(equalToConstant: 32)
+        ])
+
     }
     
 }

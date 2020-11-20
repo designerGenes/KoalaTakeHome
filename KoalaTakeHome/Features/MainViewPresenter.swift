@@ -45,18 +45,22 @@ class MainViewPresenter: NSObject {
         view?.applyModel(model: model)
     }
 
-    private func filterFeed(type: KoalaDataObjectType) -> [KoalaDataObject] {
-        RemoteDataManager.shared.dataArray.filter({$0.type == type})
+    private func filterFeed(types: [KoalaDataObjectType]) -> [KoalaDataObject] {
+        RemoteDataManager.shared.dataArray.filter({types.contains($0.type)})
     }
 
     func viewDidUpdateSwitch(view: MainView, switchInstance: KoalaSwitch) {
-        guard let assocType = switchInstance.assocType else {
-            return
-        }
         let viewSwitchState = view.switchFieldState()
         if !self.switchFieldState.equals(viewSwitchState) {
             // apply filter
-            let filteredObjects = filterFeed(type: assocType)
+            var typesSelected = [KoalaDataObjectType]()
+            if viewSwitchState.imageSwitchOn {
+                typesSelected.append(.image)
+            }
+            if viewSwitchState.textSwitchOn {
+                typesSelected.append(.text)
+            }
+            let filteredObjects = filterFeed(types: typesSelected)
             let model = MainViewControllerViewModel(dataObjects: filteredObjects, switchState: viewSwitchState)
             view.applyModel(model: model)
         }

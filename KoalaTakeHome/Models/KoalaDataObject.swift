@@ -30,11 +30,20 @@ extension URL: URLConvertible {
 
 
 struct KoalaDataObject: JSONInitializable {
+    enum CodingKeys: String {
+        case id, type, date, data, imageURL
+    }
+
     var id: String
-    var type: KoalaDataObjectType
-    var dateString: String
-    var dataString: String?
-    var imageURL: URLConvertible?
+    var type: KoalaDataObjectType {
+        return KoalaDataObjectType(rawValue: _type) ?? .error
+    }
+    private var _type: String
+    var date: String
+    var data: String?
+    var imageURL: URLConvertible? {
+        data?.url
+    }
 
     var image: UIImage? {
         guard let imageURL = self.imageURL else {
@@ -44,36 +53,33 @@ struct KoalaDataObject: JSONInitializable {
     }
 
     private static var errorJSON: JSON {
+
         JSON([
-            "id": UUID(),
-            "type": KoalaDataObjectType.error.rawValue,
-            "dateString": "no date",
-            "data": "Unable to convert this object from JSON to model"
+            CodingKeys.id.rawValue: UUID(),
+            CodingKeys.type.rawValue: KoalaDataObjectType.error.rawValue,
+            CodingKeys.date.rawValue: "no date",
+            CodingKeys.data.rawValue: "Unable to convert this object from JSON to model"
         ])
     }
 
-    mutating private func processJSON(_ json: JSON) {
-        // here because we can't return an init inside an init
-        if let id = json["id"].string,
-              let typeRaw = json["type"].string,
-              let type = KoalaDataObjectType(rawValue: typeRaw),
-              let dateString = json["date"].string,
-              let rawData = json["data"].string {
-            self.id = id
-            self.type = type
-            self.dateString = dateString
-            self.imageURL = URL(string: rawData)
-            self.dataString = rawData
-        } else {
-            processJSON(Self.errorJSON)
+    init(json: JSON) {
+        let errorJSON = Self.errorJSON
+        self.id = json[CodingKeys.id.rawValue].string ?? errorJSON[CodingKeys.id.rawValue].stringValue
+        self._type = json[CodingKeys.type.rawValue].string ?? errorJSON[CodingKeys.type.rawValue].stringValue
+        self.date = json[CodingKeys.date.rawValue].string ?? errorJSON[CodingKeys.date.rawValue].stringValue
+        self.data = json[CodingKeys.data.rawValue].string ?? errorJSON[CodingKeys.data.rawValue].stringValue
+
+        if let selfType = KoalaDataObjectType(rawValue: self._type), let data = self.data {
+            
+            if selfType == .text , let url = URL(string: data), UIApplication.shared.canOpenURL(url) == true {
+                self._type = KoalaDataObjectType.image.rawValue
+            } else if selfType == .image, !data.looksLikeURL {
+                self._type = KoalaDataObjectType.text.rawValue
+            }
+
+
         }
+
     }
 
-    init(json: JSON) {
-        self.id = ""
-        self.dataString = ""
-        self.dateString = ""
-        self.type = .error
-        self.processJSON(json)
-    }
 }

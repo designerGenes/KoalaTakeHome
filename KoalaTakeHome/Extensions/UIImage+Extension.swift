@@ -30,10 +30,6 @@ extension UIImage {
 }
 
 class PlaceholderImage: UIImage {
-    static var url: URL {
-        URL(string: "placeholderImage")!
-    }
-
     static func create(size: CGSize = CGSize.smallestValidSize) -> PlaceholderImage {
         PlaceholderImage(solidColor: .black, size: size)!
     }

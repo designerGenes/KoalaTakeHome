@@ -60,6 +60,9 @@ class MainViewController: UIViewController, MainView, KoalaSwitchListener {
         self.textEnabledSwitch.config(assocType: .text, listener: self)
         self.presenter.attachView(view: self)
         tableView.register(UINib(nibName: KoalaDataCell.described, bundle: Bundle.main), forCellReuseIdentifier: KoalaDataCell.described)
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.separatorStyle = .none
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -132,7 +135,11 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 300 // TMP!
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 400
     }
 
 }

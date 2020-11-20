@@ -19,6 +19,15 @@ extension String: URLConvertible {
     var absoluteString: String {
         self
     }
+
+    var looksLikeURL: Bool {
+        do {
+            let _ = try self.asURL()
+        } catch {
+            return false
+        }
+        return true
+    }
 }
 
 extension URL {
