@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "68A24AD1-8FB9-48BB-B77E-F095DEFECFEF"
+   type = "0"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BD7FBDCE-C984-4B79-B31F-DAAC2F1A83AC"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "KoalaTakeHome/Managers/RemoteDataManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
+            landmarkName = "retrieveRemoteData()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "BD7FBDCE-C984-4B79-B31F-DAAC2F1A83AC - cc7821685b2fe98f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Alamofire.DataResponse&lt;Foundation.Data, Alamofire.AFError&gt;) -&gt; () in KoalaTakeHome.RemoteDataManager.retrieveRemoteData() -&gt; ()"
+                  moduleName = "KoalaTakeHome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jnation/repos/KoalaTakeHome/KoalaTakeHome/Managers/RemoteDataManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "93"
+                  endingLineNumber = "93"
+                  offsetFromSymbolStart = "1567">
+               </Location>
+               <Location
+                  uuid = "BD7FBDCE-C984-4B79-B31F-DAAC2F1A83AC - e29797e54c95be05"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (SwiftyJSON.JSON) -&gt; () in closure #1 (Alamofire.DataResponse&lt;Foundation.Data, Alamofire.AFError&gt;) -&gt; () in KoalaTakeHome.RemoteDataManager.retrieveRemoteData() -&gt; ()"
+                  moduleName = "KoalaTakeHome"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jnation/repos/KoalaTakeHome/KoalaTakeHome/Managers/RemoteDataManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "94"
+                  endingLineNumber = "94"
+                  offsetFromSymbolStart = "315">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

@@ -22,7 +22,7 @@ class RemoteDataManager: NSObject {
     static var shared = RemoteDataManager()
 
     var dataArray = [KoalaDataObject]()
-    private var imageDictionary = [String: UIImage]()  // URLstring : image
+    var imageDictionary = [String: UIImage]()  // URLstring : image
 
     func retrieveImage(url: URL, listener: Any, selector: Selector) {
         let postNotification = {
@@ -80,6 +80,12 @@ class RemoteDataManager: NSObject {
             guard let data = dataResponse.data else {
                 return
             }
+
+            if let strData = String(data: data, encoding: .utf8) {
+                print("data:\n\(strData)")
+            }
+
+
             var koalaDataObjects = [KoalaDataObject]()
             do {
                 let jsonData = try JSON(data: data)

@@ -13,18 +13,25 @@ class KoalaDataCell: UITableViewCell {
     @IBOutlet weak var typeLabel: UILabel!
     @IBOutlet weak var dataContentLabel: UILabel!
 
+    override func prepareForReuse() {
+        self.dataImageView.image = nil
+        self.dataContentLabel.text = nil
+        self.typeLabel.text = nil
+        self.dateLabel.text = nil
+        super.prepareForReuse()
+    }
+
     func configure(with model: KoalaDataObject) {
         self.dataImageView.isHidden = model.type != .image
         self.dataContentLabel.isHidden = model.type != .text
         self.dataImageView.image = model.image
         self.dataContentLabel.text = model.dataString
-
-        let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-        dateFormatter.dateFormat = "MM/dd/yyyy"
-        let dateString = dateFormatter.string(from: model.date)
-        self.dateLabel.text = dateString
+        self.dateLabel.text = model.dateString
         self.typeLabel.text = model.type.rawValue
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+//        dateFormatter.dateFormat = "MM/dd/yyyy"
+
     }
     
 }

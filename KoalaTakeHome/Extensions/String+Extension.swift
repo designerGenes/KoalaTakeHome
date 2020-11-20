@@ -16,3 +16,9 @@ extension String {
         return URL(string: self)
     }
 }
+
+extension URL {
+    var asRequest: URLRequest {
+        URLRequest(url: self)
+    }
+}

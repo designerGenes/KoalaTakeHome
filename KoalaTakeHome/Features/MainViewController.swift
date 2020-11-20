@@ -17,7 +17,7 @@ struct MainViewControllerViewModel {
     var switchState: SwitchFieldState
 }
 
-class MainViewController: UIViewController, MainView {
+class MainViewController: UIViewController, MainView, KoalaSwitchListener {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var imagesEnabledSwitch: KoalaSwitch!
     @IBOutlet weak var textEnabledSwitch: KoalaSwitch!
@@ -53,26 +53,12 @@ class MainViewController: UIViewController, MainView {
         }
     }
 
-    // MARK: - init & lifecycle
-    private func commonInit() {
-        imagesEnabledSwitch.assocType = .image
-        textEnabledSwitch.assocType = .text
-        self.presenter.attachView(view: self)
-    }
-
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        commonInit()
-    }
-
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        commonInit()
-    }
-
-
+    // MARK: - lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.imagesEnabledSwitch.config(assocType: .image, listener: self)
+        self.textEnabledSwitch.config(assocType: .text, listener: self)
+        self.presenter.attachView(view: self)
         tableView.register(UINib(nibName: KoalaDataCell.described, bundle: Bundle.main), forCellReuseIdentifier: KoalaDataCell.described)
     }
 
@@ -81,7 +67,8 @@ class MainViewController: UIViewController, MainView {
         self.setLoadingState(isLoading: dataSource.isEmpty)
     }
 
-    func switchWasFlipped(switchInstance: KoalaSwitch) {
+    // KoalaSwitchListener methods
+    func switchDidUpdateValue(switchInstance: KoalaSwitch) {
         presenter.viewDidUpdateSwitch(view: self, switchInstance: switchInstance)
     }
 
@@ -102,6 +89,16 @@ class MainViewController: UIViewController, MainView {
         SwitchFieldState(imageSwitchOn: self.imagesEnabledSwitch.isOn, textSwitchOn: self.textEnabledSwitch.isOn)
     }
 
+    func tappedCell(linkedDataObject: KoalaDataObject) {
+        switch linkedDataObject.type {
+        case .image: break
+        case .text:
+            if let url = "https://koala.io/".url {
+                
+            }
+        }
+    }
+
 }
 
 extension MainViewController: UITableViewDelegate, UITableViewDataSource {
@@ -115,6 +112,13 @@ extension MainViewController: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        self.tappedCell(linkedDataObject: self.dataSource[indexPath.row])
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 300 // TMP!
+    }
 
 }
 
